@@ -2,8 +2,7 @@ package tn.esprit.Examen.Service;
 
 
 import lombok.Builder;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import tn.esprit.Examen.Entity.*;
 import tn.esprit.Examen.Respository.Classerepo;
@@ -76,19 +75,31 @@ public class MyService implements IMyService {
 
     @Override
     public void desaffecterCoursClassroomClasse(Integer idCours) {
-        CoursClassroom cc=coursClassroomrepo.findById(idCours).orElse(null);
-        if(cc!=null){
+        CoursClassroom cc = coursClassroomrepo.findById(idCours).orElse(null);
 
+        if (cc != null) {
+            cc.setIdCours(0);
+            coursClassroomrepo.save(cc);
         }
     }
 
+
     @Override
+    @Scheduled(fixedRate = 60000)
     public void archiverCoursClassrooms() {
+        List<CoursClassroom> listecours = coursClassroomrepo.findAll();
+        for (CoursClassroom cour : listecours) {
+            cour.setArchive(true);
+            coursClassroomrepo.save(cour);
+        }
 
     }
 
     @Override
     public Integer nbHeuresParSpecEtNiv(Specialite sp, Niveau nv) {
+        if (sp != null && nv != null) {
+            return coursClassroomrepo.sommedesheuresparspec(sp, nv);
+        }
         return null;
     }
 }

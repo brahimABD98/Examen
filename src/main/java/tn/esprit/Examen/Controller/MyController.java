@@ -1,22 +1,16 @@
 package tn.esprit.Examen.Controller;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.Examen.Entity.Classe;
-import tn.esprit.Examen.Entity.CoursClassroom;
-import tn.esprit.Examen.Entity.Niveau;
-import tn.esprit.Examen.Entity.Utilisateur;
+import tn.esprit.Examen.Entity.*;
 import tn.esprit.Examen.Service.IMyService;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 @RestController
 
 public class MyController {
 
-     IMyService myService;
+    IMyService myService;
 
     @PostMapping("/ajouteruser")
     public Utilisateur ajouterUtilisateur(@RequestBody Utilisateur utilisateur) {
@@ -46,5 +40,15 @@ public class MyController {
     @GetMapping("/getnbruserbyniv/count/{niv}")
     public int getnbruserbynivcount(@PathVariable("niv") Niveau niveau) {
         return myService.nbUtilisateursParNiveauUsingCount(niveau);
+    }
+
+    @PutMapping("/archivercour")
+    public void archiverCour() {
+        myService.archiverCoursClassrooms();
+    }
+
+    @GetMapping("/getnbrheure/{sp}/{nv}")
+    public Integer nbHeuresParSpecEtNiv(@PathVariable("sp") Specialite specialite, @PathVariable("nv") Niveau niveau) {
+        return myService.nbHeuresParSpecEtNiv(specialite, niveau);
     }
 }
